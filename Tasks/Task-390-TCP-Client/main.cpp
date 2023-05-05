@@ -9,7 +9,7 @@
 EthernetInterface net;
 char rbuffer[65];
 
-#define IPV4_HOST_ADDRESS "192.168.1.220"
+#define IPV4_HOST_ADDRESS "192.168.0.46"
 #define TCP_SOCKET_PORT 8080
 
 DigitalIn BlueButton(USER_BUTTON);
@@ -21,6 +21,7 @@ int main()
     printf("Ethernet socket example\n");
     net.connect();
     bool keepGoing = true;
+    int count = 0;
  
     do {
         // Show the network address
@@ -45,11 +46,14 @@ int main()
         //Connect to remote web server
         socket.connect(a);
 
+        // Send a message with a number that increments each time
+        char sbuffer[20];
+        sprintf(sbuffer, "Message #%d", count++);
+        int scount = socket.send(sbuffer, strlen(sbuffer));
+
         // Send a simple array of bytes (I've used a string so you can read it)
-        char sbuffer[] = "Hello, this is the MBED Board talking!";
         char qbuffer[] = "END";
 
-        int scount;
         if (BlueButton == 0) {
             scount = socket.send(sbuffer, sizeof sbuffer);
         } else {
